@@ -103,6 +103,7 @@ RUN bash /docker/setup-profile.sh
 FROM geode-tools-base AS geode-tools-macos
 
 ENV PATH="/osxcross/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/osxcross/lib:${LD_LIBRARY_PATH}"
 
 COPY --from=osxcross /osxcross /osxcross
 
