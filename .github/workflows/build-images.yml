@@ -1,10 +1,10 @@
 name: Build Docker Images
 
 on:
-  push:
-    paths:
-      - 'Dockerfile'
-      - '.github/workflows/build-images.yml'
+  # push:
+  #   paths:
+  #     - 'Dockerfile'
+  #     - '.github/workflows/build-images.yml'
   workflow_dispatch:
     inputs:
         geode_version:
