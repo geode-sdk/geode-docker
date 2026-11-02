@@ -34,14 +34,26 @@ ENV THEOS=/opt/theos \
 
 COPY ios-sdk.tar.xz /tmp/ios-sdk.tar.xz
 COPY ./docker/setup-theos.1.sh /docker/setup-theos.1.sh
-RUN bash /docker/setup-theos.1.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN \
+    bash /docker/setup-theos.1.sh
 
 WORKDIR /osxcross
 
 RUN echo "1" | UNATTENDED=yes ./build.sh
 
 COPY ./docker/setup-theos.2.sh /docker/setup-theos.2.sh
-RUN bash /docker/setup-theos.2.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN \
+    bash /docker/setup-theos.2.sh
+
+#
+# Geode SDK base
+#
+FROM geode-tools-base AS geode-sdk-base
+ARG GEODE_SDK_VERSION
+
+COPY ./docker/setup-sdk.sh /docker/setup-sdk.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN \
+    bash /docker/setup-sdk.sh ${GEODE_SDK_VERSION}
 
 #
 # Tools / Windows (Cross compilation CMake toolchain)
@@ -68,7 +80,8 @@ ARG TARGETARCH
 ENV ANDROID_NDK_ROOT=/opt/android-ndk
 
 COPY ./docker/setup-android.sh /docker/setup-android.sh
-RUN bash /docker/setup-android.sh ${TARGETARCH} ${ANDROID_NDK_ROOT} ${ANDROID_NDK_VERSION}
+RUN --mount=type=secret,id=GITHUB_TOKEN \
+    bash /docker/setup-android.sh ${TARGETARCH} ${ANDROID_NDK_ROOT} ${ANDROID_NDK_VERSION}
 
 COPY ./docker/setup-cli.sh /docker/setup-cli.sh
 RUN --mount=type=secret,id=GITHUB_TOKEN \
@@ -119,10 +132,8 @@ RUN --mount=type=secret,id=GITHUB_TOKEN \
 # SDK / Windows
 #
 FROM geode-tools-windows AS geode-sdk-windows
-ARG GEODE_SDK_VERSION
 
-COPY ./docker/setup-sdk.sh /docker/setup-sdk.sh
-RUN bash /docker/setup-sdk.sh ${GEODE_SDK_VERSION}
+COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 RUN set -eux; \
     geode sdk install-binaries -p windows
@@ -131,10 +142,8 @@ RUN set -eux; \
 # SDK / Android
 #
 FROM geode-tools-android AS geode-sdk-android
-ARG GEODE_SDK_VERSION
 
-COPY ./docker/setup-sdk.sh /docker/setup-sdk.sh
-RUN bash /docker/setup-sdk.sh ${GEODE_SDK_VERSION}
+COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 RUN set -eux; \
     geode sdk install-binaries -p android32; \
@@ -144,10 +153,8 @@ RUN set -eux; \
 # SDK / MacOS
 #
 FROM geode-tools-macos AS geode-sdk-macos
-ARG GEODE_SDK_VERSION
 
-COPY ./docker/setup-sdk.sh /docker/setup-sdk.sh
-RUN bash /docker/setup-sdk.sh ${GEODE_SDK_VERSION}
+COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 RUN set -eux; \
     geode sdk install-binaries -p mac
@@ -156,10 +163,8 @@ RUN set -eux; \
 # SDK / iOS
 #
 FROM geode-tools-ios AS geode-sdk-ios
-ARG GEODE_SDK_VERSION
 
-COPY ./docker/setup-sdk.sh /docker/setup-sdk.sh
-RUN bash /docker/setup-sdk.sh ${GEODE_SDK_VERSION}
+COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 RUN set -eux; \
     geode sdk install-binaries -p ios

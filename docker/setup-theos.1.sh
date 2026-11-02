@@ -11,10 +11,10 @@ apt-get install -y --no-install-recommends \
 rm -rf /var/lib/apt/lists/*
 
 if [ -n "$GITHUB_TOKEN" ]; then
-    AUTH_HEADER="Authorization: Basic $(printf 'X-Access-Token:%s' "$GITHUB_TOKEN" | base64 -w0)"
+    AUTH_HEADER="Authorization: Bearer $GITHUB_TOKEN"
 fi
 
-git clone -c http.extraheader="${AUTH_HEADER}" --depth 1 https://github.com/tpoechtrager/osxcross "${OSXCROSS}"
+git clone ${AUTH_HEADER:+-c http.extraheader="$AUTH_HEADER"} --depth 1 https://github.com/tpoechtrager/osxcross "${OSXCROSS}"
 cd "${OSXCROSS}"
 sed -i 's/"-mmacosx-version-min"/"-miphoneos-version-min"/g' wrapper/main.cpp
 sed -i 's/"-mmacos-version-min"/"-miphoneos-version-min"/g' wrapper/main.cpp

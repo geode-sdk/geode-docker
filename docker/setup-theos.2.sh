@@ -5,11 +5,11 @@ GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null || true)
 AUTH_HEADER=""
 
 if [ -n "$GITHUB_TOKEN" ]; then
-    AUTH_HEADER="Authorization: Basic $(printf 'X-Access-Token:%s' "$GITHUB_TOKEN" | base64 -w0)"
+    AUTH_HEADER="Authorization: Bearer $GITHUB_TOKEN"
 fi
 
 rm -rf target/SDK/MacOSX*.sdk
-git clone -c http.extraheader="${AUTH_HEADER}" --depth 1 https://github.com/theos/theos "${THEOS}"
+git clone ${AUTH_HEADER:+-c http.extraheader="$AUTH_HEADER"} --depth 1 https://github.com/theos/theos "${THEOS}"
 tar -xf /tmp/ios-sdk.tar.xz -C "${THEOS}/sdks"
 SDK_NAME=$(ls "${THEOS}/sdks" | grep '\.sdk' | head -1)
 ln -sf "${THEOS}/sdks/${SDK_NAME}" "${OSXCROSS}/target/SDK/${SDK_NAME}"
