@@ -16,9 +16,9 @@ FROM crazymax/osxcross:${OSXCROSS_VERSION}-ubuntu AS osxcross
 FROM ubuntu:${UBUNTU_VERSION} AS geode-tools-base
 ARG LLVM_VERSION
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    GEODE_SDK=/opt/geode \
-    PATH=/opt/geode-cli:$PATH
+ENV DEBIAN_FRONTEND=noninteractive
+ENV GEODE_SDK=/opt/geode
+ENV PATH=/opt/geode-cli:$PATH
 
 COPY ./docker/setup-base.sh /docker/setup-base.sh
 RUN bash /docker/setup-base.sh ${LLVM_VERSION}
@@ -28,9 +28,9 @@ RUN bash /docker/setup-base.sh ${LLVM_VERSION}
 #
 FROM geode-tools-base AS theos
 
-ENV THEOS=/opt/theos \
-    OSXCROSS=/osxcross \
-    PATH="/osxcross/target/bin:${PATH}"
+ENV THEOS=/opt/theos
+ENV OSXCROSS=/osxcross
+ENV PATH="/osxcross/target/bin:${PATH}"
 
 COPY ios-sdk.tar.xz /tmp/ios-sdk.tar.xz
 COPY ./docker/setup-theos.1.sh /docker/setup-theos.1.sh
@@ -56,9 +56,9 @@ RUN --mount=type=secret,id=GITHUB_TOKEN \
     bash /docker/setup-sdk.sh ${GEODE_SDK_VERSION}
 
 #
-# Tools / Windows (Cross compilation CMake toolchain)
+# Geode CLI base
 #
-FROM geode-tools-base AS geode-tools-windows
+FROM geode-tools-base AS geode-cli-base
 ARG GEODE_CLI_VERSION
 ARG TARGETARCH
 
@@ -66,15 +66,24 @@ COPY ./docker/setup-cli.sh /docker/setup-cli.sh
 RUN --mount=type=secret,id=GITHUB_TOKEN \
     bash /docker/setup-cli.sh ${GEODE_CLI_VERSION} ${TARGETARCH}
 
+#
+# Tools / Windows (Cross compilation CMake toolchain)
+#
+FROM geode-tools-base AS geode-tools-windows
+
+COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
+COPY ./docker/setup-profile.sh /docker/setup-profile.sh
+RUN bash /docker/setup-profile.sh
+
 RUN set -eux; \
     geode sdk install-linux
+ENV GEODE_CMAKE_TOOLCHAIN=/root/.local/share/Geode/cross-tools/clang-msvc-sdk/clang-msvc.cmake
 
 #
 # Tools / Android (Android NDK)
 #
 FROM geode-tools-base AS geode-tools-android
 ARG ANDROID_NDK_VERSION=r29
-ARG GEODE_CLI_VERSION
 ARG TARGETARCH
 
 ENV ANDROID_NDK_ROOT=/opt/android-ndk
@@ -82,51 +91,50 @@ ENV ANDROID_NDK_ROOT=/opt/android-ndk
 COPY ./docker/setup-android.sh /docker/setup-android.sh
 RUN --mount=type=secret,id=GITHUB_TOKEN \
     bash /docker/setup-android.sh ${TARGETARCH} ${ANDROID_NDK_ROOT} ${ANDROID_NDK_VERSION}
+ENV GEODE_CMAKE_TOOLCHAIN=/opt/android-ndk/build/cmake/android.toolchain.cmake
 
-COPY ./docker/setup-cli.sh /docker/setup-cli.sh
-RUN --mount=type=secret,id=GITHUB_TOKEN \
-    bash /docker/setup-cli.sh ${GEODE_CLI_VERSION} ${TARGETARCH}
+COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
+COPY ./docker/setup-profile.sh /docker/setup-profile.sh
+RUN bash /docker/setup-profile.sh
 
 #
 # Tools / MacOS (osxcross)
 #
 FROM geode-tools-base AS geode-tools-macos
-ARG GEODE_CLI_VERSION
-ARG TARGETARCH
 
 ENV PATH="/osxcross/bin:${PATH}"
 
 COPY --from=osxcross /osxcross /osxcross
 
-COPY ./docker/macos-toolchain.cmake /docker/macos-toolchain.cmake
+COPY ./docker/macos.toolchain.cmake /docker/macos.toolchain.cmake
 COPY ./docker/setup-mac.sh /docker/setup-mac.sh
-RUN bash /docker/setup-mac.sh /docker/macos-toolchain.cmake
+RUN bash /docker/setup-mac.sh
+ENV GEODE_CMAKE_TOOLCHAIN=/docker/macos.toolchain.cmake
 
-COPY ./docker/setup-cli.sh /docker/setup-cli.sh
-RUN --mount=type=secret,id=GITHUB_TOKEN \
-    bash /docker/setup-cli.sh ${GEODE_CLI_VERSION} ${TARGETARCH}
+COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
+COPY ./docker/setup-profile.sh /docker/setup-profile.sh
+RUN bash /docker/setup-profile.sh
 
 #
 # Tools / iOS (theos)
 #
 FROM geode-tools-base AS geode-tools-ios
-ARG GEODE_CLI_VERSION
-ARG TARGETARCH
 
-ENV OSXCROSS=/osxcross \
-    THEOS=/opt/theos \
-    PATH="${OSXCROSS}/target/bin:${PATH}"
+ENV OSXCROSS=/osxcross
+ENV THEOS=/opt/theos
+ENV PATH="${OSXCROSS}/target/bin:${PATH}"
 
 COPY --from=theos /osxcross /osxcross
 COPY --from=theos /opt/theos /opt/theos
 
-COPY ./docker/ios-toolchain.cmake /docker/ios-toolchain.cmake
+COPY ./docker/ios.toolchain.cmake /docker/ios.toolchain.cmake
 COPY ./docker/setup-ios.sh /docker/setup-ios.sh
-RUN bash /docker/setup-ios.sh /docker/ios-toolchain.cmake
+RUN bash /docker/setup-ios.sh
+ENV GEODE_CMAKE_TOOLCHAIN=/docker/ios.toolchain.cmake
 
-COPY ./docker/setup-cli.sh /docker/setup-cli.sh
-RUN --mount=type=secret,id=GITHUB_TOKEN \
-    bash /docker/setup-cli.sh ${GEODE_CLI_VERSION} ${TARGETARCH}
+COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
+COPY ./docker/setup-profile.sh /docker/setup-profile.sh
+RUN bash /docker/setup-profile.sh
 
 #
 # SDK / Windows
