@@ -1,4 +1,4 @@
-name: Build Docker Images
+name: Build Docker Images (SDK)
 
 on:
   # push:
@@ -76,17 +76,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pull tools
-        run : |
-          docker pull ghcr.io/geode-sdk/tools:${{ matrix.target }}-latest
-          docker tag ghcr.io/geode-sdk/tools:${{ matrix.target }}-latest geode-tools-${{ matrix.target }}
-
       - name: Build and push sdk image
         id: build
         uses: docker/build-push-action@v7
         with:
           build-args: |
             GEODE_SDK_VERSION=v${{ needs.version.outputs.sdk_version }}
+          build-contexts: |
+            geode-tools-${{ matrix.target }}=docker-image://ghcr.io/geode-sdk/tools:${{ matrix.target }}-latest
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           context: .
