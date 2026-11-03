@@ -82,6 +82,8 @@ jobs:
         with:
           build-args: |
             GEODE_CLI_VERSION=v${{ needs.version.outputs.cli_version }}
+          secrets: |
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           context: .
           target: geode-tools-${{ matrix.target }}
           platforms: linux/${{ matrix.arch }}
