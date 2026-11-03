@@ -34,10 +34,10 @@ case "${GEODE_SDK_VERSION}" in
         BIN_FOLDER_NAME="${GEODE_SDK_LATEST_VERSION:1}" ;;
     *)
         curl -fsSL ${AUTH_HEADER:+-H "$AUTH_HEADER"} \
-            "https://github.com/geode-sdk/geode/releases/download/v${GEODE_SDK_VERSION}/geode-v${GEODE_SDK_VERSION}-${PLATFORM_SUFFIX}.zip" \
+            "https://github.com/geode-sdk/geode/releases/download/${GEODE_SDK_VERSION}/geode-${GEODE_SDK_VERSION}-${PLATFORM_SUFFIX}.zip" \
             -o /tmp/geode-bin.zip
 
-        BIN_FOLDER_NAME="${GEODE_SDK_VERSION}" ;;
+        BIN_FOLDER_NAME="${GEODE_SDK_VERSION:1}" ;;
 esac
 
 mkdir -p "/opt/geode/bin/${BIN_FOLDER_NAME}"
