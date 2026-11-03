@@ -8,6 +8,8 @@ that runs on Linux host and can build mods for Windows, Android, macOS and iOS.
 
 ## Available Tags
 
+TODO: these tags are old, now we have tools and geode/sdk
+
 | Platform     | Tags                                         | Image size |
 |--------------|----------------------------------------------|------------|
 | Windows      | `windows`, `windows-latest`, `windows-5.9.0` | ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/prevter/geode-sdk/windows?label=%20) |
@@ -22,42 +24,24 @@ that runs on Linux host and can build mods for Windows, Android, macOS and iOS.
 
 Each image already contains pre-installed Geode SDK and the CLI alongside the toolchains required for that specific platform.
 
-### Windows & Android
-
 Navigate to the root of your mod project and run the following command:
 
 ```bash
-docker run --rm -it -v "$(pwd):/workspace" -w /workspace prevter/geode-sdk:windows /bin/bash
+docker run --rm -it -v ".:/workspace" -w /workspace geode-sdk/geode:<platform> /bin/bash
 ```
-*(replace `windows` with `android` for Android builds)*
+*(replace `<platform>` with `windows`, `android`, `macos` or `ios`)*
 
-This should drop you into a bash shell with configured toolchain. To compile your mod, simply run the geode build command:
+This should drop you into a bash shell with configured toolchain. To compile your mod, simply run the following commands:
 
 ```bash
-# For Windows
-geode build -p windows --config Release -- -G Ninja
+# To configure
+cmake --preset <platform> --presets-file /docker/CMakePresets.json
 
-# For Android (use android64 or android32)
-geode build -p android64 --config Release -- -G Ninja
+# To build
+cmake --build --preset <platform> --presets-file /docker/CMakePresets.json
 ```
 
-### macOS & iOS
-
-First step is similar to Windows and Android, but you need to use the `macos` or `ios` tag instead:
-
-```bash
-docker run --rm -it -v "$(pwd):/workspace" -w /workspace prevter/geode-sdk:macos /bin/bash
-```
-*(replace `macos` with `ios` for iOS builds)*
-
-`geode build` command doesn't support cross-compiling to Apple platforms yet, so we'll need to use CMake directly. To build your mod for macOS, run the following commands:
-
-```bash
-cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
-```
-
-No further configuration is required, CMake already picks up the correct toolchain by default.
+*(replace `<platform>` with `win`, `android32`, `android64`, `mac` or `ios`, or their `-debug` variants)*
 
 ## License
 

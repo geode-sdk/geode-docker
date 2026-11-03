@@ -1,0 +1,168 @@
+{
+  "version": 4,
+
+  "configurePresets": [
+    {
+      "name": "default",
+      "generator": "Ninja",
+
+      "toolchainFile": "$env{GEODE_CMAKE_TOOLCHAIN}",
+
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+
+        "GEODE_DONT_INSTALL_MODS": "On",
+        "SKIP_BUILDING_CODEGEN": "Off"
+      }
+    },
+
+    {
+      "inherits": "default",
+      "name": "win",
+      "displayName": "Docker Windows x64 build",
+      "binaryDir": "${sourceDir}/build-win",
+
+      "cacheVariables": {
+        "SPLAT_DIR": "/root/.local/share/Geode/cross-tools/splat",
+        "HOST_ARCH": "x86_64"
+      }
+    },
+
+    {
+      "inherits": "default",
+      "name": "android32",
+      "displayName": "Docker Android ARMv7 build",
+      "binaryDir": "${sourceDir}/build-android32",
+
+      "cacheVariables": {
+        "ANDROID_ABI": "armeabi-v7a",
+        "ANDROID_PLATFORM": "android-23",
+        "ANDROID_STL": "c++_shared"
+      }
+    },
+
+    {
+      "inherits": "default",
+      "name": "android64",
+      "displayName": "Docker Android AARCH64 build",
+      "binaryDir": "${sourceDir}/build-android64",
+
+      "cacheVariables": {
+        "ANDROID_ABI": "arm64-v8a",
+        "ANDROID_PLATFORM": "android-23",
+        "ANDROID_STL": "c++_shared"
+      }
+    },
+
+    {
+      "inherits": "default",
+      "name": "mac",
+      "displayName": "Docker MacOS x64 - AARCH64 build",
+      "binaryDir": "${sourceDir}/build-mac"
+    },
+
+    {
+      "inherits": "default",
+      "name": "ios",
+      "displayName": "Docker iOS AARCH64 build",
+      "binaryDir": "${sourceDir}/build-ios"
+    },
+
+    {
+      "inherits": "win",
+      "name": "win-debug",
+      "displayName": "Docker Windows x64 build - debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+
+    {
+      "inherits": "android32",
+      "name": "android32-debug",
+      "displayName": "Docker Android ARMv7 - debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+
+    {
+      "inherits": "android64",
+      "name": "android64-debug",
+      "displayName": "Docker Android AARCH64 - debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+
+    {
+      "inherits": "mac",
+      "name": "mac-debug",
+      "displayName": "Docker MacOS x64 - AARCH64 build - debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+
+    {
+      "inherits": "ios",
+      "name": "ios-debug",
+      "displayName": "Docker iOS AARCH64 build - debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "win",
+      "configurePreset": "win",
+      "jobs": 0
+    },
+    {
+      "name": "android32",
+      "configurePreset": "android32",
+      "jobs": 0
+    },
+    {
+      "name": "android64",
+      "configurePreset": "android64",
+      "jobs": 0
+    },
+    {
+      "name": "mac",
+      "configurePreset": "mac",
+      "jobs": 0
+    },
+    {
+      "name": "ios",
+      "configurePreset": "ios",
+      "jobs": 0
+    },
+    {
+      "name": "win-debug",
+      "configurePreset": "win-debug",
+      "jobs": 0
+    },
+    {
+      "name": "android32-debug",
+      "configurePreset": "android32-debug",
+      "jobs": 0
+    },
+    {
+      "name": "android64-debug",
+      "configurePreset": "android64-debug",
+      "jobs": 0
+    },
+    {
+      "name": "mac-debug",
+      "configurePreset": "mac-debug",
+      "jobs": 0
+    },
+    {
+      "name": "ios-debug",
+      "configurePreset": "ios-debug",
+      "jobs": 0
+    }
+  ]
+}
