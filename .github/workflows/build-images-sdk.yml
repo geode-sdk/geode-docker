@@ -151,12 +151,16 @@ jobs:
           SDK_VERSION="${{ needs.version.outputs.sdk_version }}"
           IS_DEFAULT="${{ needs.version.outputs.is_default }}"
 
-          TAGS=(-t "${REPO}/sdk:${TARGET}-${SDK_VERSION}")
+          TAGS=()
 
-          if [ "$IS_DEFAULT" = "true" ]; then
-            TAGS+=(-t "${REPO}/sdk:${TARGET}")
-            TAGS+=(-t "${REPO}/sdk:${TARGET}-latest")
-          fi
+          for IMAGE in sdk geode; do
+            TAGS+=(-t "${REPO}/${IMAGE}:${TARGET}-${SDK_VERSION}")
+
+            if [ "$IS_DEFAULT" = "true" ]; then
+              TAGS+=(-t "${REPO}/${IMAGE}:${TARGET}")
+              TAGS+=(-t "${REPO}/${IMAGE}:${TARGET}-latest")
+            fi
+          done
 
           SOURCES=()
           for digest in *; do
