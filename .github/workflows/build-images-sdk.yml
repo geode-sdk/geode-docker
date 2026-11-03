@@ -7,8 +7,8 @@ on:
   #     - '.github/workflows/build-images.yml'
   workflow_dispatch:
     inputs:
-      cli_version:
-        description: "Geode CLI version override"
+      sdk_version:
+        description: "Geode SDK version override"
         required: false
         default: ""
 
@@ -17,34 +17,34 @@ jobs:
     name: Resolve Versions
     runs-on: ubuntu-latest
     outputs:
-      cli_version: ${{ steps.parse.outputs.cli_version }}
+      sdk_version: ${{ steps.parse.outputs.sdk_version }}
       is_default: ${{ steps.parse.outputs.is_default }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Extract Geode CLI version
+      - name: Extract Geode SDK version
         id: parse
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            INPUT_VERSION="${{ inputs.cli_version }}"
+            INPUT_VERSION="${{ inputs.sdk_version }}"
           else
             INPUT_VERSION="latest"
           fi
 
           if [ -z "$INPUT_VERSION" ] || [ "$INPUT_VERSION" = "latest" ]; then
-            RESOLVED_VERSION=$(curl -fsSL https://api.github.com/repos/geode-sdk/cli/releases/latest | jq -er '.tag_name' | sed 's/^v//')
+            RESOLVED_VERSION=$(curl -fsSL https://api.github.com/repos/geode-sdk/geode/releases/latest | jq -er '.tag_name' | sed 's/^v//')
             IS_DEFAULT=true
           else
             RESOLVED_VERSION="$INPUT_VERSION"
             IS_DEFAULT=false
           fi
 
-          echo "cli_version=$RESOLVED_VERSION" >> $GITHUB_OUTPUT
+          echo "sdk_version=$RESOLVED_VERSION" >> $GITHUB_OUTPUT
           echo "is_default=$IS_DEFAULT" >> $GITHUB_OUTPUT
 
-  build-tools:
-    name: Build Tools (${{ matrix.target }} - ${{ matrix.arch }})
+  build-sdk:
+    name: Build SDK (${{ matrix.target }} - ${{ matrix.arch }})
     needs: version
     permissions:
       contents: read
@@ -76,20 +76,25 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push tools image
+      - name: Pull tools
+        run : |
+          docker pull ghcr.io/geode-sdk/tools:${{ matrix.target }}-latest
+          docker tag ghcr.io/geode-sdk/tools:${{ matrix.target }}-latest geode-tools-${{ matrix.target }}
+
+      - name: Build and push sdk image
         id: build
         uses: docker/build-push-action@v7
         with:
           build-args: |
-            GEODE_CLI_VERSION=v${{ needs.version.outputs.cli_version }}
+            GEODE_SDK_VERSION=v${{ needs.version.outputs.sdk_version }}
           secrets: |
             GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           context: .
-          target: geode-tools-${{ matrix.target }}
+          target: geode-sdk-${{ matrix.target }}
           platforms: linux/${{ matrix.arch }}
-          outputs: type=image,name=ghcr.io/${{ github.repository_owner }}/tools,push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=gha,scope=tools-${{ matrix.target }}-${{ matrix.arch }}
-          cache-to: type=gha,mode=max,scope=tools-${{ matrix.target }}-${{ matrix.arch }}
+          outputs: type=image,name=ghcr.io/${{ github.repository_owner }}/sdk,push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=sdk-${{ matrix.target }}-${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=sdk-${{ matrix.target }}-${{ matrix.arch }}
 
       - name: Export digest
         run: |
@@ -100,12 +105,12 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v7
         with:
-          name: digests-tools-${{ matrix.target }}-${{ matrix.arch }}
+          name: digests-sdk-${{ matrix.target }}-${{ matrix.arch }}
           path: /tmp/digests/*
           retention-days: 1
 
-  merge-tools:
-    needs: [version, build-tools]
+  merge-sdk:
+    needs: [version, build-sdk]
     permissions:
       contents: read
       packages: write
@@ -117,7 +122,7 @@ jobs:
           - android
           - ios
 
-    name: Merge manifest for tools-${{ matrix.target }}
+    name: Merge manifest for sdk-${{ matrix.target }}
     runs-on: ubuntu-latest
 
     steps:
@@ -125,7 +130,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           path: /tmp/digests
-          pattern: digests-tools-${{ matrix.target }}-*
+          pattern: digests-sdk-${{ matrix.target }}-*
           merge-multiple: true
 
       - name: Set up Docker Buildx
@@ -143,18 +148,19 @@ jobs:
         run: |
           REPO="ghcr.io/${{ github.repository_owner }}"
           TARGET="${{ matrix.target }}"
-          CLI_VERSION="${{ needs.version.outputs.cli_version }}"
+          SDK_VERSION="${{ needs.version.outputs.sdk_version }}"
           IS_DEFAULT="${{ needs.version.outputs.is_default }}"
 
-          TAGS=(-t "${REPO}/tools:${TARGET}-${CLI_VERSION}")
+          TAGS=(-t "${REPO}/sdk:${TARGET}-${SDK_VERSION}")
 
           if [ "$IS_DEFAULT" = "true" ]; then
-            TAGS+=(-t "${REPO}/tools:${TARGET}")
+            TAGS+=(-t "${REPO}/sdk:${TARGET}")
+            TAGS+=(-t "${REPO}/sdk:${TARGET}-latest")
           fi
 
           SOURCES=()
           for digest in *; do
-              SOURCES+=("${REPO}/tools@sha256:${digest}")
+              SOURCES+=("${REPO}/sdk@sha256:${digest}")
           done
 
           docker buildx imagetools create "${TAGS[@]}" "${SOURCES[@]}"
