@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1.7
-ARG UBUNTU_VERSION=26.04
+ARG UBUNTU_VERSION=26.10
 ARG OSXCROSS_VERSION=26.1
 ARG GEODE_CLI_VERSION=latest
 ARG GEODE_SDK_VERSION=latest
-ARG LLVM_VERSION=22
+ARG LLVM_VERSION=23
+ARG CMAKE_VERSION=4.4.5
 
 #
 # osxcross (for MacOS / iOS)
@@ -15,13 +16,15 @@ FROM crazymax/osxcross:${OSXCROSS_VERSION}-ubuntu AS osxcross
 #
 FROM ubuntu:${UBUNTU_VERSION} AS geode-tools-base
 ARG LLVM_VERSION
+ARG CMAKE_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GEODE_SDK=/opt/geode
 ENV PATH=/opt/geode-cli:$PATH
 
 COPY ./docker/setup-base.sh /docker/setup-base.sh
-RUN bash /docker/setup-base.sh ${LLVM_VERSION}
+RUN bash /docker/setup-base.sh ${LLVM_VERSION} ${CMAKE_VERSION}
+ENV PATH=/opt/cmake/bin:$PATH
 
 #
 # Theos (for iOS)
@@ -147,6 +150,7 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh win ${GEODE_SDK_VERSION}
+COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 
 #
 # SDK / Android
@@ -159,6 +163,7 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh android32 ${GEODE_SDK_VERSION}
 RUN bash /docker/setup-binaries.sh android64 ${GEODE_SDK_VERSION}
+COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 
 #
 # SDK / MacOS
@@ -170,6 +175,7 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh mac ${GEODE_SDK_VERSION}
+COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 
 #
 # SDK / iOS
@@ -181,3 +187,4 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh ios ${GEODE_SDK_VERSION}
+COPY ./docker/CMakePresets.json /docker/CMakePresets.json

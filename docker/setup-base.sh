@@ -2,13 +2,14 @@
 set -eux
 
 LLVM_VERSION=$1
+CMAKE_VERSION=$2
 
 NODE_VERSION=24
 curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
 apt-get update
 apt-get install -y --no-install-recommends \
     ca-certificates curl gpg nodejs git unzip xz-utils \
-    build-essential cmake pkg-config ninja-build jq
+    build-essential pkg-config ninja-build jq
 rm -rf /var/lib/apt/lists/*
 
 install -d /etc/apt/keyrings
@@ -21,6 +22,15 @@ apt-get install -y --no-install-recommends \
     llvm-${LLVM_VERSION} llvm-${LLVM_VERSION}-dev
 rm -rf /var/lib/apt/lists/*
 
-for tool in clang clang++ lld lld-link llvm-ar llvm-ranlib llvm-nm llvm-rc llvm-mt; do
-    ln -sf /usr/bin/${tool}-${LLVM_VERSION} /usr/bin/${tool}
+for tool in /usr/bin/*-${LLVM_VERSION}; do
+    [ -x "$tool" ] || continue
+    name="${tool%-${LLVM_VERSION}}"
+    ln -sf "$tool" "$name"
 done
+
+curl -fsSL https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-$(uname -m).sh -o /tmp/cmake.sh
+
+mkdir /opt/cmake
+sh /tmp/cmake.sh \
+    --skip-license \
+    --prefix=/opt/cmake
