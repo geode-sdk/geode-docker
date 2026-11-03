@@ -18,8 +18,8 @@ echo "deb [signed-by=/etc/apt/keyrings/llvm.gpg] http://apt.llvm.org/resolute/ l
 
 apt-get update
 apt-get install -y --no-install-recommends \
-    clang-${LLVM_VERSION} clang-tools-${LLVM_VERSION} lld-${LLVM_VERSION} \
-    llvm-${LLVM_VERSION} llvm-${LLVM_VERSION}-dev
+    clang-${LLVM_VERSION} lld-${LLVM_VERSION} \
+    llvm-${LLVM_VERSION}
 rm -rf /var/lib/apt/lists/*
 
 for tool in /usr/bin/*-${LLVM_VERSION}; do
@@ -34,3 +34,4 @@ mkdir /opt/cmake
 sh /tmp/cmake.sh \
     --skip-license \
     --prefix=/opt/cmake
+rm -f /tmp/cmake.sh

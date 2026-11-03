@@ -15,3 +15,6 @@ SDK_NAME=$(ls "${THEOS}/sdks" | grep '\.sdk' | head -1)
 ln -sf "${THEOS}/sdks/${SDK_NAME}" "${OSXCROSS}/target/SDK/${SDK_NAME}"
 ln -sf "${THEOS}/sdks/${SDK_NAME}" "${OSXCROSS}/target/SDK/MacOSX26.1.sdk"
 rm /tmp/ios-sdk.tar.xz
+
+# Remove unnecessary stuff from osxcross build
+rm -rf /osxcross/build /osxcross/tarballs /osxcross/.git /opt/theos/.git

@@ -30,6 +30,7 @@ ENV PATH=/opt/cmake/bin:$PATH
 # Theos (for iOS)
 #
 FROM geode-tools-base AS theos
+ARG LLVM_VERSION
 
 ENV THEOS=/opt/theos
 ENV OSXCROSS=/osxcross
@@ -38,7 +39,7 @@ ENV PATH="/osxcross/target/bin:${PATH}"
 COPY ios-sdk.tar.xz /tmp/ios-sdk.tar.xz
 COPY ./docker/setup-theos.1.sh /docker/setup-theos.1.sh
 RUN --mount=type=secret,id=GITHUB_TOKEN \
-    bash /docker/setup-theos.1.sh
+    bash /docker/setup-theos.1.sh ${LLVM_VERSION}
 
 WORKDIR /osxcross
 

@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 set -eux
 
+LLVM_VERSION=$1
+
 GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null || true)
 AUTH_HEADER=""
 
 apt-get update
 apt-get install -y --no-install-recommends \
     libxml2-dev uuid-dev libssl-dev \
-    bash patch make xz-utils bzip2 cpio zlib1g-dev
+    bash patch make xz-utils bzip2 cpio zlib1g-dev \
+    llvm-${LLVM_VERSION}-dev clang-tools-${LLVM_VERSION}
 rm -rf /var/lib/apt/lists/*
 
 if [ -n "$GITHUB_TOKEN" ]; then
