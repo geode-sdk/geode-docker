@@ -12,7 +12,9 @@
         "CMAKE_BUILD_TYPE": "Release",
 
         "GEODE_DONT_INSTALL_MODS": "On",
-        "SKIP_BUILDING_CODEGEN": "Off"
+        "SKIP_BUILDING_CODEGEN": "Off",
+
+        "CPM_SOURCE_CACHE": "/cpm-cache"
       }
     },
 
