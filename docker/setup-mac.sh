@@ -2,7 +2,7 @@
 set -eux
 
 apt-get update
-apt-get install -y --no-install-recommends libxml2-utils
+apt-get install -y --no-install-recommends libxml2-utils libssl3
 rm -rf /var/lib/apt/lists/*
 SYS_LIBXML=$(find /usr/lib/ -name "libxml2.so.*" | head -1)
 if [ -n "$SYS_LIBXML" ]; then

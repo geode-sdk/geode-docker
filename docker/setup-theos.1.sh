@@ -27,6 +27,19 @@ sed -i '/if (!detectTarget(argc, argv, target)) {/i \
     }\
   }' wrapper/main.cpp
 sed -i 's/set(CMAKE_SYSTEM_NAME "Darwin")/set(CMAKE_SYSTEM_NAME "iOS")/g' tools/toolchain.cmake
+sed -i \
+  -e '/CCTOOLS_VERSION=\$STABLE_CCTOOLS_VERSION/,$ {' \
+  -e '/^    CONFFLAGS=/r /dev/stdin' \
+  -e '}' \
+  build.sh <<'EOF'
+    $SED -i '/# it may cause the build to fail./a\
+\
+            if test -e $LLVM_INCLUDE_DIR/llvm-c/Visibility.h; then\
+              cp -f $LLVM_INCLUDE_DIR/llvm-c/Visibility.h `dirname ${0}`/include/llvm-c\
+              mkdir -p `dirname ${0}`/include/llvm/Config\
+              cp -f $LLVM_INCLUDE_DIR/llvm/Config/llvm-config.h `dirname ${0}`/include/llvm/Config\
+            fi' configure
+EOF
 
 mkdir -p /tmp/sdk-extract
 tar -xf /tmp/ios-sdk.tar.xz -C /tmp/sdk-extract

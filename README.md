@@ -27,11 +27,11 @@ Each image already contains pre-installed Geode SDK and the CLI alongside the to
 Navigate to the root of your mod project and run the following command:
 
 ```bash
-docker run --rm -it -v "$(pwd):/workspace" -w /workspace geode-sdk/geode:<platform> /bin/bash
+docker run --rm -it -v ".:/workspace" -w /workspace geode-sdk/geode:<platform> /bin/bash
 ```
 *(replace `<platform>` with `windows`, `android`, `macos` or `ios`)*
 
-This should drop you into a bash shell with configured toolchain. To compile your mod, simply run the geode build command:
+This should drop you into a bash shell with configured toolchain. To compile your mod, simply run the following commands:
 
 ```bash
 # To configure
@@ -41,7 +41,7 @@ cmake --preset <platform> --presets-file /docker/CMakePresets.json
 cmake --build --preset <platform> --presets-file /docker/CMakePresets.json
 ```
 
-*(replace `<platform>` with `windows`, `android32`, `android64`, `macos` or `ios`, or their `-debug` variants)*
+*(replace `<platform>` with `win`, `android32`, `android64`, `mac` or `ios`, or their `-debug` variants)*
 
 ## License
 
