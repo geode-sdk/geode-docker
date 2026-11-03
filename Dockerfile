@@ -51,8 +51,10 @@ RUN --mount=type=secret,id=GITHUB_TOKEN \
 #
 # Geode SDK base
 #
-FROM geode-tools-base AS geode-sdk-base
+FROM ubuntu:${UBUNTU_VERSION} AS geode-sdk-base
 ARG GEODE_SDK_VERSION
+
+ENV GEODE_SDK=/opt/geode
 
 COPY ./docker/setup-sdk.sh /docker/setup-sdk.sh
 RUN --mount=type=secret,id=GITHUB_TOKEN \

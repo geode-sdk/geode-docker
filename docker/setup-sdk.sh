@@ -4,6 +4,11 @@ set -eux
 GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null || true)
 GEODE_SDK_VERSION=$1
 
+apt-get update
+apt-get install -y --no-install-recommends \
+    ca-certificates curl jq git
+rm -rf /var/lib/apt/lists/*
+
 if [ -n "$GITHUB_TOKEN" ]; then
     AUTH_HEADER="Authorization: Bearer $GITHUB_TOKEN"
 fi
