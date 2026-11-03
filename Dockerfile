@@ -141,39 +141,43 @@ RUN bash /docker/setup-profile.sh
 # SDK / Windows
 #
 FROM geode-tools-windows AS geode-sdk-windows
+ARG GEODE_SDK_VERSION
 
 COPY --from=geode-sdk-base /opt/geode /opt/geode
 
-RUN set -eux; \
-    geode sdk install-binaries -p windows
+COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
+RUN bash /docker/setup-binaries.sh win ${GEODE_SDK_VERSION}
 
 #
 # SDK / Android
 #
 FROM geode-tools-android AS geode-sdk-android
+ARG GEODE_SDK_VERSION
 
 COPY --from=geode-sdk-base /opt/geode /opt/geode
 
-RUN set -eux; \
-    geode sdk install-binaries -p android32; \
-    geode sdk install-binaries -p android64
+COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
+RUN bash /docker/setup-binaries.sh android32 ${GEODE_SDK_VERSION}
+RUN bash /docker/setup-binaries.sh android64 ${GEODE_SDK_VERSION}
 
 #
 # SDK / MacOS
 #
 FROM geode-tools-macos AS geode-sdk-macos
+ARG GEODE_SDK_VERSION
 
 COPY --from=geode-sdk-base /opt/geode /opt/geode
 
-RUN set -eux; \
-    geode sdk install-binaries -p mac
+COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
+RUN bash /docker/setup-binaries.sh mac ${GEODE_SDK_VERSION}
 
 #
 # SDK / iOS
 #
 FROM geode-tools-ios AS geode-sdk-ios
+ARG GEODE_SDK_VERSION
 
 COPY --from=geode-sdk-base /opt/geode /opt/geode
 
-RUN set -eux; \
-    geode sdk install-binaries -p ios
+COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
+RUN bash /docker/setup-binaries.sh ios ${GEODE_SDK_VERSION}

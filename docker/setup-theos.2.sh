@@ -9,7 +9,7 @@ if [ -n "$GITHUB_TOKEN" ]; then
 fi
 
 rm -rf target/SDK/MacOSX*.sdk
-git clone ${AUTH_HEADER:+-c http.extraheader="$AUTH_HEADER"} --depth 1 https://github.com/theos/theos "${THEOS}"
+git clone --depth 1 https://github.com/theos/theos "${THEOS}"
 tar -xf /tmp/ios-sdk.tar.xz -C "${THEOS}/sdks"
 SDK_NAME=$(ls "${THEOS}/sdks" | grep '\.sdk' | head -1)
 ln -sf "${THEOS}/sdks/${SDK_NAME}" "${OSXCROSS}/target/SDK/${SDK_NAME}"

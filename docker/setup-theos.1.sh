@@ -14,7 +14,7 @@ if [ -n "$GITHUB_TOKEN" ]; then
     AUTH_HEADER="Authorization: Bearer $GITHUB_TOKEN"
 fi
 
-git clone ${AUTH_HEADER:+-c http.extraheader="$AUTH_HEADER"} --depth 1 https://github.com/tpoechtrager/osxcross "${OSXCROSS}"
+git clone --depth 1 https://github.com/tpoechtrager/osxcross "${OSXCROSS}"
 cd "${OSXCROSS}"
 sed -i 's/"-mmacosx-version-min"/"-miphoneos-version-min"/g' wrapper/main.cpp
 sed -i 's/"-mmacos-version-min"/"-miphoneos-version-min"/g' wrapper/main.cpp
