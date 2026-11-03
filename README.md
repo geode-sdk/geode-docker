@@ -43,6 +43,8 @@ cmake --build --preset <platform> --presets-file /docker/CMakePresets.json
 
 *(replace `<platform>` with `win`, `android32`, `android64`, `mac` or `ios`, or their `-debug` variants)*
 
+You can mount your existing CPM cache into `/cpm-cache` with `-v "$CPM_SOURCE_CACHE:/cpm-cache"` in the docker call for improved compile times.
+
 ## License
 
 This project is licensed under the Boost Software License 1.0. See the [LICENSE](LICENSE.txt) file for details.
