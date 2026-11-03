@@ -34,7 +34,10 @@ docker run --rm -it -v "$(pwd):/workspace" -w /workspace geode-sdk/geode:<platfo
 This should drop you into a bash shell with configured toolchain. To compile your mod, simply run the geode build command:
 
 ```bash
+# To configure
 cmake --preset <platform> --presets-file /docker/CMakePresets.json
+
+# To build
 cmake --build --preset <platform> --presets-file /docker/CMakePresets.json
 ```
 
