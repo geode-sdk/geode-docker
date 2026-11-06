@@ -56,6 +56,7 @@ FROM ubuntu:${UBUNTU_VERSION} AS geode-sdk-base
 ARG GEODE_SDK_VERSION
 
 ENV GEODE_SDK=/opt/geode
+ENV GEODE_BINDINGS_REPO_PATH=/bindings
 
 COPY ./docker/setup-sdk.sh /docker/setup-sdk.sh
 RUN --mount=type=secret,id=GITHUB_TOKEN \
@@ -149,6 +150,8 @@ RUN bash /docker/setup-profile.sh
 FROM geode-tools-windows AS geode-sdk-windows
 ARG GEODE_SDK_VERSION
 
+ENV GEODE_BINDINGS_REPO_PATH=/bindings
+COPY --from=geode-sdk-base /bindings /bindings
 COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
@@ -162,6 +165,8 @@ ENV CPM_SOURCE_CACHE=/cpm-cache
 FROM geode-tools-android AS geode-sdk-android
 ARG GEODE_SDK_VERSION
 
+ENV GEODE_BINDINGS_REPO_PATH=/bindings
+COPY --from=geode-sdk-base /bindings /bindings
 COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
@@ -176,6 +181,8 @@ ENV CPM_SOURCE_CACHE=/cpm-cache
 FROM geode-tools-macos AS geode-sdk-macos
 ARG GEODE_SDK_VERSION
 
+ENV GEODE_BINDINGS_REPO_PATH=/bindings
+COPY --from=geode-sdk-base /bindings /bindings
 COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
@@ -189,6 +196,8 @@ ENV CPM_SOURCE_CACHE=/cpm-cache
 FROM geode-tools-ios AS geode-sdk-ios
 ARG GEODE_SDK_VERSION
 
+ENV GEODE_BINDINGS_REPO_PATH=/bindings
+COPY --from=geode-sdk-base /bindings /bindings
 COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh

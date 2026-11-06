@@ -15,7 +15,7 @@ fi
 
 case "${GEODE_SDK_VERSION}" in
     nightly)
-        git clone --depth 1 --branch nightly https://github.com/geode-sdk/geode.git "${GEODE_SDK}" ;;
+        git clone --depth 1 --branch main https://github.com/geode-sdk/geode.git "${GEODE_SDK}" ;;
     latest)
         GEODE_SDK_LATEST_VERSION="$(
             curl -fsSL ${AUTH_HEADER:+-H "$AUTH_HEADER"} https://api.github.com/repos/geode-sdk/geode/releases/latest |
@@ -26,3 +26,6 @@ case "${GEODE_SDK_VERSION}" in
     *)
         git clone --depth 1 --branch "${GEODE_SDK_VERSION}" https://github.com/geode-sdk/geode.git "${GEODE_SDK}" ;;
 esac
+
+git clone https://github.com/geode-sdk/bindings.git "${GEODE_BINDINGS_REPO_PATH}"
+touch "${GEODE_BINDINGS_REPO_PATH}/.pull-latest-promise"
