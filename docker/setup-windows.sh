@@ -2,7 +2,10 @@
 set -eux
 
 GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null || true)
-TARGETARCH=$1
+WIN_ARCH=x86_64
+XWIN_VERSION=0.10.0
+WIN_MANIFEST_VERSION=18
+WIN_SDK_VERSION=10.0.28000.2957
 
 XWIN="$WIN_CROSS_ROOT/xwin"
 SPLAT="$WIN_CROSS_ROOT/splat"
@@ -22,7 +25,7 @@ case "$(uname -m)" in
 esac
 
 RELEASE=$(curl -fsSL ${AUTH_HEADER:+-H "$AUTH_HEADER"} \
-    https://api.github.com/repos/Jake-Shadle/xwin/releases/latest)
+    https://api.github.com/repos/Jake-Shadle/xwin/releases/tags/${XWIN_VERSION})
 
 NAME=$(jq -r --arg suffix "$SUFFIX" \
     '.assets[] | select(.name | endswith($suffix)) | .name' \
@@ -41,16 +44,11 @@ tar -xzf "$ARCHIVE" --strip-components=1 \
 rm "$ARCHIVE"
 chmod +x "$XWIN"
 
-if [ "${TARGETARCH}" = "arm64" ]; then
-    XWIN_ARCH="aarch64"
-else
-    XWIN_ARCH="x86_64"
-fi
-
-
 "$XWIN" \
     --accept-license \
-    --arch "$XWIN_ARCH" \
+    --manifest-version $WIN_MANIFEST_VERSION \
+    --sdk-version $WIN_SDK_VERSION \
+    --arch "$WIN_ARCH" \
     --cache-dir "$WIN_CROSS_ROOT/.xwin-cache" \
     splat \
     --output "$SPLAT" \

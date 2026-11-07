@@ -83,7 +83,7 @@ ENV WIN_CROSS_ROOT=/opt/win-cross
 
 COPY ./docker/setup-windows.sh /docker/setup-windows.sh
 RUN --mount=type=secret,id=GITHUB_TOKEN \
-    bash /docker/setup-windows.sh ${TARGETARCH}
+    bash /docker/setup-windows.sh
 ENV GEODE_CMAKE_TOOLCHAIN=$WIN_CROSS_ROOT/clang-msvc-sdk/clang-msvc.cmake
 
 COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
