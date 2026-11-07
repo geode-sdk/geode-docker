@@ -77,14 +77,18 @@ RUN --mount=type=secret,id=GITHUB_TOKEN \
 # Tools / Windows (Cross compilation CMake toolchain)
 #
 FROM geode-tools-base AS geode-tools-windows
+ARG TARGETARCH
+
+ENV WIN_CROSS_ROOT=/opt/win-cross
+
+COPY ./docker/setup-windows.sh /docker/setup-windows.sh
+RUN --mount=type=secret,id=GITHUB_TOKEN \
+    bash /docker/setup-windows.sh ${TARGETARCH}
+ENV GEODE_CMAKE_TOOLCHAIN=$WIN_CROSS_ROOT/clang-msvc-sdk/clang-msvc.cmake
 
 COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
 COPY ./docker/setup-profile.sh /docker/setup-profile.sh
 RUN bash /docker/setup-profile.sh
-
-RUN set -eux; \
-    geode sdk install-linux
-ENV GEODE_CMAKE_TOOLCHAIN=/root/.local/share/Geode/cross-tools/clang-msvc-sdk/clang-msvc.cmake
 
 #
 # Tools / Android (Android NDK)
@@ -98,7 +102,7 @@ ENV ANDROID_NDK_ROOT=/opt/android-ndk
 COPY ./docker/setup-android.sh /docker/setup-android.sh
 RUN --mount=type=secret,id=GITHUB_TOKEN \
     bash /docker/setup-android.sh ${TARGETARCH} ${ANDROID_NDK_ROOT} ${ANDROID_NDK_VERSION}
-ENV GEODE_CMAKE_TOOLCHAIN=/opt/android-ndk/build/cmake/android.toolchain.cmake
+ENV GEODE_CMAKE_TOOLCHAIN=$ANDROID_NDK_ROOT/build/cmake/android.toolchain.cmake
 
 COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
 COPY ./docker/setup-profile.sh /docker/setup-profile.sh

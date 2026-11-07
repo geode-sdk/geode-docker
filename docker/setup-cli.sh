@@ -23,7 +23,9 @@ else
     CLI_SUFFIX="linux"
 fi
 
-curl -fsSL "https://github.com/geode-sdk/cli/releases/download/${GEODE_CLI_VERSION}/geode-cli-${GEODE_CLI_VERSION}-${CLI_SUFFIX}.zip" -o /tmp/geode-cli.zip
+curl -fsSL ${AUTH_HEADER:+-H "$AUTH_HEADER"} \
+    "https://github.com/geode-sdk/cli/releases/download/${GEODE_CLI_VERSION}/geode-cli-${GEODE_CLI_VERSION}-${CLI_SUFFIX}.zip" \
+    -o /tmp/geode-cli.zip
 
 unzip -q /tmp/geode-cli.zip -d /opt/geode-cli
 rm /tmp/geode-cli.zip

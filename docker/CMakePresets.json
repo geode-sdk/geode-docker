@@ -14,7 +14,8 @@
         "GEODE_DONT_INSTALL_MODS": "On",
         "SKIP_BUILDING_CODEGEN": "Off",
 
-        "CPM_SOURCE_CACHE": "/cpm-cache"
+        "CPM_SOURCE_CACHE": "/cpm-cache",
+        "GEODE_BINDINGS_REPO_PATH": "/bindings"
       }
     },
 
