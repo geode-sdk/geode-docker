@@ -66,6 +66,28 @@
 
     {
       "inherits": "default",
+      "name": "macm1",
+      "displayName": "Docker MacOS AARCH64 build",
+      "binaryDir": "${sourceDir}/build-macm1",
+
+      "cacheVariables": {
+        "CMAKE_OSX_ARCHITECTURES": "arm64"
+      }
+    },
+
+    {
+      "inherits": "default",
+      "name": "macintel",
+      "displayName": "Docker MacOS x64 build",
+      "binaryDir": "${sourceDir}/build-macintel",
+
+      "cacheVariables": {
+        "CMAKE_OSX_ARCHITECTURES": "x86_64"
+      }
+    },
+
+    {
+      "inherits": "default",
       "name": "ios",
       "displayName": "Docker iOS AARCH64 build",
       "binaryDir": "${sourceDir}/build-ios"
@@ -101,6 +123,24 @@
     {
       "inherits": "mac",
       "name": "mac-debug",
+      "displayName": "Docker MacOS x64 - AARCH64 build - debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+
+    {
+      "inherits": "macm1",
+      "name": "macm1-debug",
+      "displayName": "Docker MacOS x64 - AARCH64 build - debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+
+    {
+      "inherits": "macintel",
+      "name": "macintel-debug",
       "displayName": "Docker MacOS x64 - AARCH64 build - debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
@@ -157,6 +197,26 @@
     },
 
     {
+      "inherits": "macm1",
+      "name": "macm1-cache",
+      "displayName": "Docker MacOS x64 - AARCH64 build - cache",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_LAUNCHER": "sccache",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
+      }
+    },
+
+    {
+      "inherits": "macintel",
+      "name": "macintel-cache",
+      "displayName": "Docker MacOS x64 - AARCH64 build - cache",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_LAUNCHER": "sccache",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
+      }
+    },
+
+    {
       "inherits": "ios",
       "name": "ios-cache",
       "displayName": "Docker iOS AARCH64 build - cache",
@@ -187,6 +247,16 @@
       "jobs": 0
     },
     {
+      "name": "macm1",
+      "configurePreset": "macm1",
+      "jobs": 0
+    },
+    {
+      "name": "macintel",
+      "configurePreset": "macintel",
+      "jobs": 0
+    },
+    {
       "name": "ios",
       "configurePreset": "ios",
       "jobs": 0
@@ -212,6 +282,16 @@
       "jobs": 0
     },
     {
+      "name": "macm1-debug",
+      "configurePreset": "macm1-debug",
+      "jobs": 0
+    },
+    {
+      "name": "macintel-debug",
+      "configurePreset": "macintel-debug",
+      "jobs": 0
+    },
+    {
       "name": "ios-debug",
       "configurePreset": "ios-debug",
       "jobs": 0
@@ -234,6 +314,16 @@
     {
       "name": "mac-cache",
       "configurePreset": "mac-cache",
+      "jobs": 0
+    },
+    {
+      "name": "macm1-cache",
+      "configurePreset": "macm1-cache",
+      "jobs": 0
+    },
+    {
+      "name": "macintel-cache",
+      "configurePreset": "macintel-cache",
       "jobs": 0
     },
     {
