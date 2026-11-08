@@ -26,7 +26,7 @@
       "binaryDir": "${sourceDir}/build-win",
 
       "cacheVariables": {
-        "SPLAT_DIR": "/root/.local/share/Geode/cross-tools/splat",
+        "SPLAT_DIR": "$env{WIN_CROSS_ROOT}/splat",
         "HOST_ARCH": "x86_64"
       }
     },
