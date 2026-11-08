@@ -71,6 +71,8 @@ The available platform presets are:
 
 You can mount your existing CPM cache into `/cpm-cache` with `-v "$CPM_SOURCE_CACHE:/cpm-cache"` in the docker call for improved compile times.
 
+You can mount your existing bindings into `/bindings` with `-v "$GEODE_BINDINGS_REPO_PATH:/bindings"` in the docker call to use them instead.
+
 You can also mount external mods into `/mods`, incase of external dependencies.
 
 ## License
