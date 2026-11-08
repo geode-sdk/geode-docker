@@ -114,6 +114,55 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
+    },
+
+    {
+      "inherits": "win",
+      "name": "win-cache",
+      "displayName": "Docker Windows x64 build - cache",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_LAUNCHER": "sccache",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
+      }
+    },
+
+    {
+      "inherits": "android32",
+      "name": "android32-cache",
+      "displayName": "Docker Android ARMv7 - cache",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_LAUNCHER": "sccache",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
+      }
+    },
+
+    {
+      "inherits": "android64",
+      "name": "android64-cache",
+      "displayName": "Docker Android AARCH64 - cache",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_LAUNCHER": "sccache",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
+      }
+    },
+
+    {
+      "inherits": "mac",
+      "name": "mac-cache",
+      "displayName": "Docker MacOS x64 - AARCH64 build - cache",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_LAUNCHER": "sccache",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
+      }
+    },
+
+    {
+      "inherits": "ios",
+      "name": "ios-cache",
+      "displayName": "Docker iOS AARCH64 build - cache",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
     }
   ],
   "buildPresets": [
@@ -165,6 +214,31 @@
     {
       "name": "ios-debug",
       "configurePreset": "ios-debug",
+      "jobs": 0
+    },
+    {
+      "name": "win-cache",
+      "configurePreset": "win-cache",
+      "jobs": 0
+    },
+    {
+      "name": "android32-cache",
+      "configurePreset": "android32-cache",
+      "jobs": 0
+    },
+    {
+      "name": "android64-cache",
+      "configurePreset": "android64-cache",
+      "jobs": 0
+    },
+    {
+      "name": "mac-cache",
+      "configurePreset": "mac-cache",
+      "jobs": 0
+    },
+    {
+      "name": "ios-cache",
+      "configurePreset": "ios-cache",
       "jobs": 0
     }
   ]
