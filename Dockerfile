@@ -20,6 +20,7 @@ ARG CMAKE_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GEODE_SDK=/opt/geode
+ENV SCCACHE_DIR=/opt/sccache/cache
 ENV PATH=/opt/geode-cli:$PATH
 
 COPY ./docker/setup-base.sh /docker/setup-base.sh
