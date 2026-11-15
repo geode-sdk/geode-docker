@@ -221,7 +221,8 @@
       "name": "ios-cache",
       "displayName": "Docker iOS AARCH64 build - cache",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+        "CMAKE_C_COMPILER_LAUNCHER": "sccache",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "sccache"
       }
     }
   ],
