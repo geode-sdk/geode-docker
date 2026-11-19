@@ -90,6 +90,7 @@ ENV GEODE_CMAKE_TOOLCHAIN=$WIN_CROSS_ROOT/clang-msvc-sdk/clang-msvc.cmake
 COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
 COPY ./docker/setup-profile.sh /docker/setup-profile.sh
 RUN bash /docker/setup-profile.sh
+COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 
 #
 # Tools / Android (Android NDK)
@@ -108,6 +109,7 @@ ENV GEODE_CMAKE_TOOLCHAIN=$ANDROID_NDK_ROOT/build/cmake/android.toolchain.cmake
 COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
 COPY ./docker/setup-profile.sh /docker/setup-profile.sh
 RUN bash /docker/setup-profile.sh
+COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 
 #
 # Tools / MacOS (osxcross)
@@ -127,6 +129,7 @@ ENV GEODE_CMAKE_TOOLCHAIN=/docker/macos.toolchain.cmake
 COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
 COPY ./docker/setup-profile.sh /docker/setup-profile.sh
 RUN bash /docker/setup-profile.sh
+COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 
 #
 # Tools / iOS (theos)
@@ -148,6 +151,7 @@ ENV GEODE_CMAKE_TOOLCHAIN=/docker/ios.toolchain.cmake
 COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
 COPY ./docker/setup-profile.sh /docker/setup-profile.sh
 RUN bash /docker/setup-profile.sh
+COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 
 #
 # SDK / Windows
@@ -161,7 +165,6 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh win ${GEODE_SDK_VERSION}
-COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 ENV CPM_SOURCE_CACHE=/cpm-cache
 
 #
@@ -177,7 +180,6 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh android32 ${GEODE_SDK_VERSION}
 RUN bash /docker/setup-binaries.sh android64 ${GEODE_SDK_VERSION}
-COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 ENV CPM_SOURCE_CACHE=/cpm-cache
 
 #
@@ -192,7 +194,6 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh mac ${GEODE_SDK_VERSION}
-COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 ENV CPM_SOURCE_CACHE=/cpm-cache
 
 #
@@ -207,5 +208,4 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh ios ${GEODE_SDK_VERSION}
-COPY ./docker/CMakePresets.json /docker/CMakePresets.json
 ENV CPM_SOURCE_CACHE=/cpm-cache
