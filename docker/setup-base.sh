@@ -35,3 +35,4 @@ sh /tmp/cmake.sh \
     --skip-license \
     --prefix=/opt/cmake
 rm -f /tmp/cmake.sh
+rm -rf /opt/cmake/doc /opt/cmake/man
