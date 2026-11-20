@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 set -eux
+set -o pipefail
 
 LLVM_VERSION=$1
 CMAKE_VERSION=$2
 
 NODE_VERSION=24
-curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
 apt-get update
+apt-get install -y --no-install-recommends ca-certificates curl
+curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
 apt-get install -y --no-install-recommends \
-    ca-certificates curl gpg nodejs git unzip xz-utils \
+    gpg nodejs git unzip xz-utils \
     build-essential pkg-config ninja-build jq sccache
 rm -rf /var/lib/apt/lists/*
 

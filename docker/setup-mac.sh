@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eux
+set -o pipefail
 
 apt-get update
 apt-get install -y --no-install-recommends libxml2-utils libssl3

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eux
+set -o pipefail
 
 GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null || true)
 AUTH_HEADER=""

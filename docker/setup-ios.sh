@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eux
+set -o pipefail
 
 sed -i '/is not an iOS SDK/d; /message(FATAL_ERROR/d' /opt/cmake/share/cmake-*/Modules/Platform/iOS-Initialize.cmake
 

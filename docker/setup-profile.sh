@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eux
+set -o pipefail
 
 chmod +x /opt/geode-cli/geode
 ln -sf /opt/geode-cli/geode /usr/local/bin/geode
