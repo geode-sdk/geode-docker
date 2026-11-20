@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 set -eux
+set -o pipefail
 
 LLVM_VERSION=$1
 
 GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN 2>/dev/null || true)
 AUTH_HEADER=""
+OSXCROSS_VER="00bbf6b090a1f5fd8710adfe5d7da56da8282f96"
 
 apt-get update
 apt-get install -y --no-install-recommends \
@@ -17,8 +19,13 @@ if [ -n "$GITHUB_TOKEN" ]; then
     AUTH_HEADER="Authorization: Bearer $GITHUB_TOKEN"
 fi
 
-git clone --depth 1 https://github.com/tpoechtrager/osxcross "${OSXCROSS}"
+# clone osxcross at a specific commit
+git init "${OSXCROSS}"
 cd "${OSXCROSS}"
+git remote add origin https://github.com/tpoechtrager/osxcross
+git fetch --depth 1 origin "$OSXCROSS_VER"
+git checkout FETCH_HEAD
+
 sed -i 's/"-mmacosx-version-min"/"-miphoneos-version-min"/g' wrapper/main.cpp
 sed -i 's/"-mmacos-version-min"/"-miphoneos-version-min"/g' wrapper/main.cpp
 sed -i '/if (!detectTarget(argc, argv, target)) {/i \
