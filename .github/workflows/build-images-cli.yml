@@ -81,6 +81,10 @@ jobs:
         id: build
         uses: docker/build-push-action@v7
         with:
+          labels: |
+            org.opencontainers.image.description=geode-docker ${{ github.sha }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
           build-args: |
             GEODE_CLI_VERSION=v${{ needs.version.outputs.cli_version }}
           secrets: |
@@ -161,8 +165,8 @@ jobs:
               SOURCES+=("${REPO}/tools@sha256:${digest}")
           done
 
-          DESC=$(echo -e "Built using:\n* geode-docker \`${{ github.sha }}\`\n* Geode CLI \`$CLI_VERSION\`")
-
           docker buildx imagetools create \
-            --annotation "index:org.opencontainers.image.description=$DESC" \
+            --annotation "index:org.opencontainers.image.description=geode-docker ${{ github.sha }}" \
+            --annotation "index:org.opencontainers.image.revision=${{ github.sha }}" \
+            --annotation "index:org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
             "${TAGS[@]}" "${SOURCES[@]}"
