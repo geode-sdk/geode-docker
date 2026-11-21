@@ -103,6 +103,8 @@ COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
 COPY ./docker/setup-profile.sh /docker/setup-profile.sh
 RUN bash /docker/setup-profile.sh
 COPY ./docker/CMakePresets.json /docker/CMakePresets.json
+COPY ./docker/build-util.sh ./docker/setup-build-util.sh /docker/
+RUN bash /docker/setup-build-util.sh win
 
 #
 # Tools / Android (Android NDK)
@@ -122,6 +124,8 @@ COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
 COPY ./docker/setup-profile.sh /docker/setup-profile.sh
 RUN bash /docker/setup-profile.sh
 COPY ./docker/CMakePresets.json /docker/CMakePresets.json
+COPY ./docker/build-util.sh ./docker/setup-build-util.sh /docker/
+RUN bash /docker/setup-build-util.sh android64
 
 #
 # Tools / MacOS (osxcross)
@@ -142,6 +146,8 @@ COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
 COPY ./docker/setup-profile.sh /docker/setup-profile.sh
 RUN bash /docker/setup-profile.sh
 COPY ./docker/CMakePresets.json /docker/CMakePresets.json
+COPY ./docker/build-util.sh ./docker/setup-build-util.sh /docker/
+RUN bash /docker/setup-build-util.sh mac
 
 #
 # Tools / iOS (theos)
@@ -164,6 +170,8 @@ COPY --from=geode-cli-base /opt/geode-cli/geode /opt/geode-cli/geode
 COPY ./docker/setup-profile.sh /docker/setup-profile.sh
 RUN bash /docker/setup-profile.sh
 COPY ./docker/CMakePresets.json /docker/CMakePresets.json
+COPY ./docker/build-util.sh ./docker/setup-build-util.sh /docker/
+RUN bash /docker/setup-build-util.sh ios
 
 #
 # SDK / Windows
