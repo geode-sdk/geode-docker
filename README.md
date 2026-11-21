@@ -43,7 +43,37 @@ docker run --rm -it -v .:/code -w /code ghcr.io/geode-sdk/geode:<platform>-<vers
 > docker run --rm -it -v .:/code -w /code ghcr.io/geode-sdk/geode:windows-6.0.0-alpha.1
 > ```
 
-This should drop you into a bash shell with configured toolchain. To compile your mod, simply run the following commands:
+This should drop you into a bash shell with configured toolchain. We provide an utility script `build` that invokes CMake with the necessary arguments:
+
+```bash
+# Configures and builds
+build
+# Can specify the preset manually
+build android32
+# Configure arguments
+build -- -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+```
+
+```bash
+$ build --help
+Configures and builds a CMake project using a preset from the docker image
+
+Usage: build [OPTIONS] [PRESET] [-- EXTRA_ARGS...]
+
+Arguments:
+  PRESET           CMake preset to use (default: ...)
+
+Options:
+  -c, --configure  Only run cmake configure
+  -b, --build      Only run cmake build
+  -h, --help       Show this help and exit
+
+Everything after '--' is passed directly to cmake
+```
+
+---
+
+If needed, you can also do it manually with the following commands:
 
 ```bash
 # To configure
@@ -54,16 +84,22 @@ cmake --build --preset <platform> --presets-file /docker/CMakePresets.json
 ```
 
 The available platform presets are:
-```
+```bash
+# These all compile in Release mode
 "win"             - Docker Windows x64 build
 "android32"       - Docker Android ARMv7 build
 "android64"       - Docker Android AARCH64 build
 "mac"             - Docker MacOS x64 - AARCH64 build
+"macm1"           - Docker MacOS AARCH64 build
+"macintel"        - Docker MacOS x64 build
 "ios"             - Docker iOS AARCH64 build
+# These compile in RelWithDebInfo mode
 "win-debug"       - Docker Windows x64 build - debug
 "android32-debug" - Docker Android ARMv7 - debug
 "android64-debug" - Docker Android AARCH64 - debug
 "mac-debug"       - Docker MacOS x64 - AARCH64 build - debug
+"macm1-debug"     - Docker MacOS AARCH64 build - debug
+"macintel-debug"  - Docker MacOS x64 build - debug
 "ios-debug"       - Docker iOS AARCH64 build - debug
 ```
 
