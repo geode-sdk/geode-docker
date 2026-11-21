@@ -161,4 +161,8 @@ jobs:
               SOURCES+=("${REPO}/tools@sha256:${digest}")
           done
 
-          docker buildx imagetools create "${TAGS[@]}" "${SOURCES[@]}"
+          DESC=$(echo -e "geode-docker ${{ github.sha }}\ngeode cli $CLI_VERSION")
+
+          docker buildx imagetools create \
+            --annotation "index:org.opencontainers.image.description=$DESC" \
+            "${TAGS[@]}" "${SOURCES[@]}"
