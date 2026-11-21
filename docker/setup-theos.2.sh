@@ -19,3 +19,14 @@ rm /tmp/ios-sdk.tar.xz
 
 # Remove unnecessary stuff from osxcross build
 rm -rf /osxcross/build /osxcross/tarballs /osxcross/.git /opt/theos/.git
+# and from the toolchain
+SDK_PATH="${THEOS}/sdks/${SDK_NAME}"
+FRAMEWORKS="${SDK_PATH}/System/Library/Frameworks"
+rm -rf "${FRAMEWORKS}/SwiftUICore.framework"
+rm -rf "${FRAMEWORKS}/SwiftUI.framework"
+rm -rf "${FRAMEWORKS}/Matter.framework"
+rm -rf "${FRAMEWORKS}/RealityFoundation.framework"
+rm -rf "${FRAMEWORKS}/AppIntents.framework"
+
+# Remove swift module metadata for every remaining framework, which makes up most of the size in those modules
+find "${FRAMEWORKS}/"*.framework \( -name '*.swiftmodule' -o -name '*.swiftinterface' -o -name '*.swiftdoc' \) -delete
