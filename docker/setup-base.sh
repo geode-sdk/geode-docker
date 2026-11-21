@@ -11,7 +11,7 @@ apt-get install -y --no-install-recommends ca-certificates curl
 curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
 apt-get install -y --no-install-recommends \
     gpg nodejs git unzip xz-utils \
-    build-essential pkg-config ninja-build jq sccache
+    pkg-config ninja-build jq sccache
 rm -rf /var/lib/apt/lists/*
 
 install -d /etc/apt/keyrings
