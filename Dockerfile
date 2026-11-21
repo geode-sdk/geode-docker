@@ -7,9 +7,21 @@ ARG LLVM_VERSION=23
 ARG CMAKE_VERSION=4.4.5
 
 #
-# osxcross (for MacOS / iOS)
+# osxcross base (scratch image, no utils and only /osxcross)
 #
-FROM crazymax/osxcross:${OSXCROSS_VERSION}-ubuntu AS osxcross
+FROM crazymax/osxcross:${OSXCROSS_VERSION}-ubuntu AS osxcross-base
+
+#
+# osxcross (for MacOS / iOS)
+# Use alpine so we can have basic shell utils and are able to remove slack from osxcross
+#
+FROM alpine:latest AS osxcross
+COPY ./docker/setup-osxcross.sh /docker/setup-osxcross.sh
+
+# hacky way to avoid introducing a separate 2gb layer for osxcross
+RUN --mount=type=bind,from=osxcross-base,source=/osxcross,target=/mnt/osxcross \
+    cp -a /mnt/osxcross/. /osxcross/ \
+    && sh /docker/setup-osxcross.sh
 
 #
 # Base setup
