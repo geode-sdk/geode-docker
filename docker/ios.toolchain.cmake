@@ -18,13 +18,20 @@ set(CMAKE_C_LINK_FLAGS "-fuse-ld=$ENV{OSXCROSS}/target/bin/arm64-apple-darwin25.
 set(CMAKE_CXX_LINK_FLAGS "-fuse-ld=$ENV{OSXCROSS}/target/bin/arm64-apple-darwin25.1-ld")
 set(CMAKE_OBJC_LINK_FLAGS "-fuse-ld=$ENV{OSXCROSS}/target/bin/arm64-apple-darwin25.1-ld")
 set(CMAKE_OBJCXX_LINK_FLAGS "-fuse-ld=$ENV{OSXCROSS}/target/bin/arm64-apple-darwin25.1-ld")
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=$ENV{OSXCROSS}/target/bin/arm64-apple-darwin25.1-ld")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=$ENV{OSXCROSS}/target/bin/arm64-apple-darwin25.1-ld")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=$ENV{OSXCROSS}/target/bin/arm64-apple-darwin25.1-ld")
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+# used for LTO
+set(CMAKE_CXX_COMPILER_AR llvm-ar)
+set(CMAKE_CXX_COMPILER_RANLIB llvm-ranlib)
+set(CMAKE_C_COMPILER_AR llvm-ar)
+set(CMAKE_C_COMPILER_RANLIB llvm-ranlib)
+
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld")
 
 if(NOT DEFINED CMAKE_CXX_SCAN_FOR_MODULES)
     set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
