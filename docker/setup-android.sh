@@ -30,14 +30,21 @@ TC=$(ls -d "${ANDROID_NDK_ROOT}"/toolchains/llvm/prebuilt/*/ | head -1)
 
 # Remove unnecessary bins and such from android toolchain
 rm -f "${TC}bin/clangd" "${TC}bin/clang-check" "${TC}bin/clang-tidy" \
-      "${TC}bin/clang-scan-deps" "${TC}bin/llvm-bolt" "${TC}bin/llvm-cfi-verify" \
-      "${TC}bin/sancov" "${TC}bin/lldb"
+      "${TC}bin/llvm-bolt" "${TC}bin/llvm-cfi-verify" "${TC}bin/dsymutil" \
+      "${TC}bin/sancov" "${TC}bin/lldb" "${TC}bin/llvm-dwp" "${TC}bin/llvm-objdump" "${TC}bin/llvm-dwarfdump" "${TC}bin/llvm-ml" \
+      "${TC}lib/x86_64-unknown-linux-gnu/libsimpleperf_readelf.a"
+rm -f "${TC}lib/clang/"*/lib/linux/*/lldb-server
+# musl
+rm -rf "${TC}musl"
 rm -f "${TC}lib/libclang.so" "${TC}lib/libclang-cpp.so" "${TC}lib/liblldb.so"
+
 rm -rf "${TC}simpleperf" "${ANDROID_NDK_ROOT}/shader-tools" "${TC}lib/x86_64-w64-windows-gnu"
-rm -rf "${TC}sysroot/usr/lib/i686-linux-android" \
+rm -rf "${TC}sysroot/usr/lib/i686-linux-android"  \
        "${TC}sysroot/usr/lib/x86_64-linux-android" \
        "${TC}sysroot/usr/lib/riscv64-linux-android"
 rm -rf "${TC}lib/clang"/*/lib/linux/*i686* \
        "${TC}lib/clang"/*/lib/linux/*x86_64* \
        "${TC}lib/clang"/*/lib/linux/*riscv64* \
        "${TC}lib/clang"/*/lib/linux/i386
+# simpleperf,  third party source files
+rm -rf "${ANDROID_NDK_ROOT}/simpleperf" "${ANDROID_NDK_ROOT}/sources/third_party"
