@@ -6,6 +6,7 @@ chmod +x /opt/geode-cli/geode
 ln -sf /opt/geode-cli/geode /usr/local/bin/geode
 
 mkdir /mods
+chmod 777 /mods
 
 CLI_PROFILE="/root/.config/geode"
 mkdir -p "${CLI_PROFILE}/geode" "${CLI_PROFILE}/Contents/geode"
