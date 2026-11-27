@@ -22,6 +22,8 @@ ln -sf /mods "\${CLI_PROFILE}/geode/mods"
 ln -sf /mods "\${CLI_PROFILE}/Contents/geode/mods"
 geode profile add --name DockerProfile "\${CLI_PROFILE}/GeometryDash.exe" win
 geode profile add --name DockerProfileMac "\${CLI_PROFILE}/GeometryDash" mac
-git config --global --add safe.directory /bindings
+git config --global --add safe.directory '*'
 
 EOF
+# helps with "dubious ownership" in cpm-cache directories and /bindings
+git config --global --add safe.directory '*'
