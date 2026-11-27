@@ -38,3 +38,5 @@ sh /tmp/cmake.sh \
     --prefix=/opt/cmake
 rm -f /tmp/cmake.sh
 rm -rf /opt/cmake/doc /opt/cmake/man
+
+mkdir -p /cpm-cache /mods /bindings && chmod -R 777 /cpm-cache /mods /bindings

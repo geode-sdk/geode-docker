@@ -38,6 +38,7 @@ ENV PATH=/opt/geode-cli:$PATH
 COPY ./docker/setup-base.sh /docker/setup-base.sh
 RUN bash /docker/setup-base.sh ${LLVM_VERSION} ${CMAKE_VERSION}
 ENV PATH=/opt/cmake/bin:$PATH
+ENV CPM_SOURCE_CACHE=/cpm-cache
 
 #
 # Theos (for iOS)
@@ -185,7 +186,6 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh win ${GEODE_SDK_VERSION}
-ENV CPM_SOURCE_CACHE=/cpm-cache
 
 #
 # SDK / Android
@@ -200,7 +200,6 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh android32 ${GEODE_SDK_VERSION}
 RUN bash /docker/setup-binaries.sh android64 ${GEODE_SDK_VERSION}
-ENV CPM_SOURCE_CACHE=/cpm-cache
 
 #
 # SDK / MacOS
@@ -214,7 +213,6 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh mac ${GEODE_SDK_VERSION}
-ENV CPM_SOURCE_CACHE=/cpm-cache
 
 #
 # SDK / iOS
@@ -228,4 +226,3 @@ COPY --from=geode-sdk-base /opt/geode /opt/geode
 
 COPY ./docker/setup-binaries.sh /docker/setup-binaries.sh
 RUN bash /docker/setup-binaries.sh ios ${GEODE_SDK_VERSION}
-ENV CPM_SOURCE_CACHE=/cpm-cache

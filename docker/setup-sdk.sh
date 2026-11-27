@@ -30,3 +30,4 @@ esac
 
 git clone https://github.com/geode-sdk/bindings.git "${GEODE_BINDINGS_REPO_PATH}"
 touch "${GEODE_BINDINGS_REPO_PATH}/.pull-latest-promise"
+chmod -R a+rwX /bindings
