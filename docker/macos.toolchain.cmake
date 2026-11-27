@@ -8,13 +8,26 @@ endif()
 set(CMAKE_OSX_SYSROOT $ENV{OSXCROSS_SDK_PATH})
 set(CMAKE_C_COMPILER /osxcross/bin/$ENV{OSXCROSS_TARGET}-clang)
 set(CMAKE_CXX_COMPILER /osxcross/bin/$ENV{OSXCROSS_TARGET}-clang++)
-set(CMAKE_AR /usr/bin/llvm-ar)
-set(CMAKE_RANLIB /usr/bin/llvm-ranlib)
 set(CMAKE_FIND_ROOT_PATH /osxcross)
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+if("${CMAKE_OSX_ARCHITECTURES}" MATCHES ";")
+    # universal build, use osxcross stuff
+    set(_LD "/osxcross/bin/$ENV{OSXCROSS_TARGET}-ld")
+    set(CMAKE_AR /osxcross/bin/$ENV{OSXCROSS_TARGET}-ar)
+    set(CMAKE_RANLIB /osxcross/bin/$ENV{OSXCROSS_TARGET}-ranlib)
+else()
+    set(_LD "lld")
+    set(CMAKE_AR /usr/bin/llvm-ar)
+    set(CMAKE_RANLIB /usr/bin/llvm-ranlib)
+endif()
+
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=${_LD}")
+set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=${_LD}")
+set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=${_LD}")
 
 # used for LTO
 foreach(lang C CXX OBJC OBJCXX)
@@ -22,9 +35,6 @@ foreach(lang C CXX OBJC OBJCXX)
     set(CMAKE_${lang}_COMPILER_RANLIB "${CMAKE_RANLIB}")
 endforeach()
 
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-fuse-ld=lld")
-set(CMAKE_SHARED_LINKER_FLAGS_INIT "-fuse-ld=lld")
-set(CMAKE_MODULE_LINKER_FLAGS_INIT "-fuse-ld=lld")
 
 if(NOT DEFINED CMAKE_CXX_SCAN_FOR_MODULES)
     set(CMAKE_CXX_SCAN_FOR_MODULES OFF)

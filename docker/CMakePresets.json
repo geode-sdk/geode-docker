@@ -62,7 +62,11 @@
       "inherits": "default",
       "name": "mac",
       "displayName": "Docker MacOS x64 - AARCH64 build",
-      "binaryDir": "${sourceDir}/build-mac"
+      "binaryDir": "${sourceDir}/build-mac",
+
+      "cacheVariables": {
+        "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64"
+      }
     },
 
     {
